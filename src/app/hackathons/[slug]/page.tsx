@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import Image from "next/image";
 import { auth } from "@/auth";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -109,7 +110,13 @@ export default async function HackathonDetailPage({ params }: { params: { slug: 
       {/* Banner */}
       <div className="w-full h-48 md:h-64 lg:h-80 bg-gradient-to-r from-violet-600 to-fuchsia-600 relative">
         {hackathon.bannerUrl && (
-          <img src={hackathon.bannerUrl} alt={hackathon.title} className="w-full h-full object-cover" />
+          <Image 
+            src={hackathon.bannerUrl} 
+            alt={hackathon.title} 
+            fill 
+            className="object-cover" 
+            priority
+          />
         )}
       </div>
 

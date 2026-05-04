@@ -36,7 +36,19 @@ export default async function EditHackathonPage({ params }: { params: { id: stri
       </div>
 
       <div className="bg-background border rounded-2xl p-8 shadow-sm">
-        <HackathonForm initialData={hackathon} isEdit />
+        <HackathonForm 
+          initialData={{
+            ...hackathon,
+            startDate: hackathon.startDate.toISOString().split('T')[0],
+            endDate: hackathon.endDate.toISOString().split('T')[0],
+            registrationDeadline: hackathon.registrationDeadline.toISOString().split('T')[0],
+            difficulty: hackathon.difficulty as "beginner" | "intermediate" | "advanced",
+            status: hackathon.status as "upcoming" | "ongoing" | "ended",
+            bannerUrl: hackathon.bannerUrl || "",
+            prizePool: hackathon.prizePool || 0,
+          }} 
+          isEdit 
+        />
       </div>
     </div>
   );

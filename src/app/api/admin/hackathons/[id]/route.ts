@@ -75,7 +75,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     });
 
     return new NextResponse(null, { status: 204 });
-  } catch (_error) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
