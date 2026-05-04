@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, MapPin, Calendar, Edit3, ExternalLink } from "lucide-react";
+import { Mail, Calendar, Edit3, ExternalLink } from "lucide-react";
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import {

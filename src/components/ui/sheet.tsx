@@ -17,7 +17,7 @@ function SheetTrigger({
   asChild,
   ...props
 }: SheetPrimitive.Trigger.Props & { asChild?: boolean }) {
-  const Comp = (asChild ? Slot : SheetPrimitive.Trigger) as any
+  const Comp = (asChild ? Slot : SheetPrimitive.Trigger) as React.ElementType
   return <Comp data-slot="sheet-trigger" {...props} />
 }
 
@@ -25,7 +25,7 @@ function SheetClose({
   asChild,
   ...props
 }: SheetPrimitive.Close.Props & { asChild?: boolean }) {
-  const Comp = (asChild ? Slot : SheetPrimitive.Close) as any
+  const Comp = (asChild ? Slot : SheetPrimitive.Close) as React.ElementType
   return <Comp data-slot="sheet-close" {...props} />
 }
 

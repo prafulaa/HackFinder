@@ -107,7 +107,7 @@ export function HackathonForm({ initialData, isEdit }: HackathonFormProps) {
       toast.success(isEdit ? "Hackathon updated!" : "Hackathon created!");
       router.push("/admin/hackathons");
       router.refresh();
-    } catch (_error) {
+    } catch {
       toast.error("Failed to save hackathon");
     }
   };

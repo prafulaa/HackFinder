@@ -44,7 +44,7 @@ export function BookmarkButton({ hackathonId, initialIsBookmarked, authenticated
         toast.success("Hackathon bookmarked!");
       }
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
