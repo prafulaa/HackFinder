@@ -1,0 +1,152 @@
+// prisma/schema.prisma — COPY THIS EXACTLY
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  image         String?
+  bio           String?
+  github        String?
+  linkedin      String?
+  skills        String[] // ["React", "Python", "ML"]
+  experienceLevel String @default("beginner") // beginner | intermediate | advanced
+  role          String   @default("user") // user | admin
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  bookmarks     Bookmark[]
+  teamMembers   TeamMember[]
+  teamsOwned    Team[]     @relation("TeamOwner")
+  notifications Notification[]
+  hackathonsOrganized Hackathon[] @relation("Organizer")
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Hackathon {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  description   String
+  bannerUrl     String?
+  websiteUrl    String
+  registrationUrl String
+  startDate     DateTime
+  endDate       DateTime
+  registrationDeadline DateTime
+  location      String   // "Online" or city name
+  isOnline      Boolean  @default(true)
+  latitude      Float?
+  longitude     Float?
+  prizePool     Int?     // in USD
+  maxTeamSize   Int      @default(4)
+  minTeamSize   Int      @default(1)
+  themes        String[] // ["AI", "HealthTech", "Web3"]
+  technologies  String[] // ["React", "Python", "Rust"]
+  difficulty    String   @default("all") // beginner | intermediate | advanced | all
+  organizerId   String?
+  organizer     User?    @relation("Organizer", fields: [organizerId], references: [id])
+  status        String   @default("upcoming") // upcoming | ongoing | ended
+  source        String   @default("manual") // manual | devpost | eventbrite
+  externalId    String?  // id from external source
+  featured      Boolean  @default(false)
+  participantCount Int   @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bookmarks     Bookmark[]
+  teams         Team[]
+  tags          HackathonTag[]
+}
+
+model Bookmark {
+  id           String   @id @default(cuid())
+  userId       String
+  hackathonId  String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hackathon    Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  @@unique([userId, hackathonId])
+}
+
+model Team {
+  id           String   @id @default(cuid())
+  name         String
+  hackathonId  String
+  ownerId      String
+  bio          String?
+  isOpen       Boolean  @default(true) // accepting members?
+  neededSkills String[]
+  createdAt    DateTime @default(now())
+  hackathon    Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+  owner        User     @relation("TeamOwner", fields: [ownerId], references: [id])
+  members      TeamMember[]
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      String   @default("member") // owner | member | invited
+  joinedAt  DateTime @default(now())
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([teamId, userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // deadline_reminder | team_invite | new_hackathon
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HackathonTag {
+  id          String    @id @default(cuid())
+  hackathonId String
+  tag         String
+  hackathon   Hackathon @relation(fields: [hackathonId], references: [id], onDelete: Cascade)
+}
